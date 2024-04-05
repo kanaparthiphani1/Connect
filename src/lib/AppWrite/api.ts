@@ -59,6 +59,15 @@ export async function signInAccount(user: { email: string; password: string }) {
   }
 }
 
+export async function signOutAccount() {
+  try {
+    const deletedSession = await account.deleteSession("current");
+    return deletedSession;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 export async function getCurrentUser() {
   try {
     const currentAccount = await account.get();
