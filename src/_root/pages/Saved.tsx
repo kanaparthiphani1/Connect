@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 const Saved = () => {
   const { user } = useUserContext();
-  const { data: savedPosts, isPending } = useGetSavedPosts(user.id);
+  const { data: savedPosts } = useGetSavedPosts(user.id);
   console.log("Data Saved : ", savedPosts);
 
   return (

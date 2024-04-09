@@ -67,12 +67,15 @@ export const useCreatePost = () => {
 export const useGetRecentPostsQuery = () => {
   return useInfiniteQuery({
     queryKey: [QUERY_KEYS.GET_RECENT_POSTS],
-    queryFn: getInfinitePosts,
-    getNextPageParam: (lastPage) => {
+    queryFn: getInfinitePosts as any,
+    getNextPageParam: (lastPage: any) => {
+      // If there's no data, there are no more pages.
       if (lastPage && lastPage.documents.length === 0) {
         return null;
       }
-      const lastId = lastPage?.documents[lastPage.documents.length - 1].$id;
+
+      // Use the $id of the last document as the cursor.
+      const lastId = lastPage.documents[lastPage.documents.length - 1].$id;
       return lastId;
     },
   });
@@ -184,12 +187,15 @@ export const useDeletePost = () => {
 export const useGetPosts = () => {
   return useInfiniteQuery({
     queryKey: [QUERY_KEYS.GET_INFINITE_POSTS],
-    queryFn: getInfinitePosts,
-    getNextPageParam: (lastPage) => {
+    queryFn: getInfinitePosts as any,
+    getNextPageParam: (lastPage: any) => {
+      // If there's no data, there are no more pages.
       if (lastPage && lastPage.documents.length === 0) {
         return null;
       }
-      const lastId = lastPage?.documents[lastPage.documents.length - 1].$id;
+
+      // Use the $id of the last document as the cursor.
+      const lastId = lastPage.documents[lastPage.documents.length - 1].$id;
       return lastId;
     },
   });
@@ -228,7 +234,7 @@ export const useUpdateFollowed = (userId: string) => {
       newUpdatedFollowed,
     }: {
       docId: string;
-      newUpdatedFollowed: any[];
+      newUpdatedFollowed: unknown[];
     }) => {
       console.log("List in useUpdated : ", newUpdatedFollowed);
 

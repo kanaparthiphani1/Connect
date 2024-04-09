@@ -4,18 +4,15 @@ import {
   useGetCurrentUser,
   useGetFollowed,
   useGetPeople,
-  useUpdateFollowed,
 } from "@/lib/react-query/queriesAndMutations";
 
 const AllUsers = () => {
   const { data: currentUser } = useGetCurrentUser();
-  const { data: users, isPending } = useGetPeople();
+  const { data: users, isLoading } = useGetPeople();
 
   console.log("USER : ", currentUser);
 
-  const { data: followed, isPending: isFollowedPending } = useGetFollowed(
-    currentUser?.$id || ""
-  );
+  const { data: followed } = useGetFollowed(currentUser?.$id || "");
 
   return (
     <div className="flex flex-col flex-1 w-full px-10 py-10 overflow-scroll custom-scrollbar">
@@ -27,7 +24,7 @@ const AllUsers = () => {
         />
         <p className="ml-4 h3-bold lg:h1-bold ">All Users</p>
       </div>
-      {isPending ? (
+      {isLoading ? (
         <Loader />
       ) : (
         <div className="py-8 mt-2 md:gap-9 w-full grid grid-cols-1 xs:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-7 max-w-5xl;">

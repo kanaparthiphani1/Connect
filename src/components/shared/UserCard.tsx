@@ -17,7 +17,7 @@ const UserCard = ({
 }) => {
   const { data: currentUser } = useGetCurrentUser();
 
-  const { mutate: updateFollowed, isPending: isUdpateFollowedPending } =
+  const { mutate: updateFollowed, isLoading: isUdpateFollowedPending } =
     useUpdateFollowed(currentUser?.$id || "");
 
   console.log("Followd List", followedList);

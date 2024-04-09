@@ -9,8 +9,7 @@ const Home = () => {
   const { ref, inView } = useInView();
   const {
     data: posts,
-    isPending: isPostLoading,
-    isError: isErrorPosts,
+    isLoading: isPostLoading,
     hasNextPage: hasNextPagePosts,
     fetchNextPage,
   } = useGetRecentPostsQuery();
@@ -29,7 +28,7 @@ const Home = () => {
             <Loader />
           ) : (
             <ul className="flex flex-col flex-1 gap-9 w-full ">
-              {posts?.pages.map((item, index) => {
+              {posts?.pages.map((item, _index) => {
                 return item?.documents.map((post: Models.Document) => (
                   <li key={post.$id} className="flex justify-center w-full">
                     <PostCard post={post} />
