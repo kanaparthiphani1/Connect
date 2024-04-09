@@ -6,9 +6,11 @@ import { useUserContext } from "@/context/AuthContext";
 const Topbar = () => {
   const navigate = useNavigate();
   const { user } = useUserContext();
-  const { mutate: signOut } = useSignOutAccountMutation(() =>
-    navigate("/sign-in")
-  );
+  const { mutate: signOut } = useSignOutAccountMutation(() => {
+    console.log("Navigating");
+
+    navigate("/sign-in");
+  });
 
   return (
     <section className="topbar">

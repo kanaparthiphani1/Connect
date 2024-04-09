@@ -1,8 +1,14 @@
-import React from "react";
 import { Outlet, Navigate } from "react-router-dom";
 
 const AuthLayout = () => {
-  const isAuthenticated = false;
+  const cookieFallback = localStorage.getItem("cookieFallback");
+
+  const isAuthenticated =
+    cookieFallback === "[]" ||
+    cookieFallback === null ||
+    cookieFallback === undefined
+      ? false
+      : true;
   return (
     <>
       {isAuthenticated ? (
