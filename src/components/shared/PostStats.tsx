@@ -1,4 +1,5 @@
 import {
+  useAddActivty,
   useDeleteSavePostMutation,
   useGetCurrentUser,
   useLikePostMutation,
@@ -23,6 +24,7 @@ const PostStats = ({ post, userId }: PostStatsProps) => {
   const { mutate: savePost, isLoading: isSavingPost } = useSavePostMutation();
   const { mutate: deleteSavePost, isLoading: isDeleteSavedPost } =
     useDeleteSavePostMutation();
+  const { mutateAsync: addActivity } = useAddActivty();
 
   const { data: currentUser } = useGetCurrentUser();
 
@@ -48,6 +50,7 @@ const PostStats = ({ post, userId }: PostStatsProps) => {
 
     setLikes(likesArray);
     likePost({ postId: post.$id, likesArray });
+    addActivity({ activityMessage: "LIKED_POST", userId: userId });
   };
 
   const handleSavePost = (
@@ -62,6 +65,7 @@ const PostStats = ({ post, userId }: PostStatsProps) => {
 
     savePost({ userId: userId, postId: post.$id });
     setIsSaved(true);
+    addActivity({ activityMessage: "SAVED_POST", userId: userId });
   };
 
   const containerStyles = location.pathname.startsWith("/profile")

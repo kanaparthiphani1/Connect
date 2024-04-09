@@ -19,6 +19,7 @@ import { useUserContext } from "@/context/AuthContext";
 import { useToast } from "../ui/use-toast";
 import { useNavigate } from "react-router-dom";
 import {
+  useAddActivty,
   useCreatePost,
   useUpdatePost,
 } from "@/lib/react-query/queriesAndMutations";
@@ -34,6 +35,8 @@ const PostsForm = ({ action, post }: PostFormProps) => {
   const navigate = useNavigate();
   const { mutateAsync: createPost, isLoading: isLoadingCreate } =
     useCreatePost();
+
+  const { mutateAsync: addActivity } = useAddActivty();
 
   const { mutateAsync: updatePost, isLoading: isLoadingUpdate } =
     useUpdatePost();
@@ -80,6 +83,7 @@ const PostsForm = ({ action, post }: PostFormProps) => {
         title: "Create post failed. PLease try again",
       });
     } else {
+      addActivity({ activityMessage: "NEW_POST", userId: user.id });
       form.reset();
       navigate("/");
     }

@@ -2,7 +2,9 @@ import { Models } from "appwrite";
 import { Button } from "../ui/button";
 import {
   useGetCurrentUser,
+  useGetFollowers,
   useUpdateFollowed,
+  useUpdateFollowers,
 } from "@/lib/react-query/queriesAndMutations";
 import Loader from "./Loader";
 
@@ -16,14 +18,16 @@ const UserCard = ({
   followedList: any;
 }) => {
   const { data: currentUser } = useGetCurrentUser();
-
+  const { data: followersList } = useGetFollowers(user.$id);
   const { mutate: updateFollowed, isLoading: isUdpateFollowedPending } =
     useUpdateFollowed(currentUser?.$id || "");
+
+  const { mutate: updateFollowrs } = useUpdateFollowers(user.$id);
 
   console.log("Followd List", followedList);
 
   const followHandler = () => {
-    if (followedList) {
+    if (followedList?.documents[0]?.followed) {
       console.log("New Followed user  : ", user.$id);
 
       const newFollowedList = [...followedList.documents[0].followed, user.$id];
@@ -33,6 +37,19 @@ const UserCard = ({
         docId: followedList.documents[0].$id || "",
         newUpdatedFollowed: newFollowedList,
       });
+
+      if (followersList?.documents[0]?.followedList) {
+        const newFollowersList = [
+          ...followersList.documents[0].followedList,
+          currentUser.$id,
+        ];
+        console.log("New FOllowers list : ", newFollowersList);
+
+        updateFollowrs({
+          docId: followersList.documents[0].$id || "",
+          newUpdatedFollowers: newFollowersList,
+        });
+      }
     }
   };
 
@@ -49,6 +66,17 @@ const UserCard = ({
         docId: followedList.documents[0].$id || "",
         newUpdatedFollowed: newFollowedList,
       });
+      if (followersList?.documents[0]?.followedList) {
+        const newFollowersList = followersList.documents[0].followedList.filter(
+          (x) => x != currentUser.$id
+        );
+        console.log("New FOllowers list : ", newFollowersList);
+
+        updateFollowrs({
+          docId: followersList.documents[0].$id || "",
+          newUpdatedFollowers: newFollowersList,
+        });
+      }
     }
   };
 

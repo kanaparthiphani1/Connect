@@ -13,6 +13,7 @@ const AllUsers = () => {
   console.log("USER : ", currentUser);
 
   const { data: followed } = useGetFollowed(currentUser?.$id || "");
+  // const { data: followers } = useGetFollowed(currentUser?.$id || "");
 
   return (
     <div className="flex flex-col flex-1 w-full px-10 py-10 overflow-scroll custom-scrollbar">
@@ -28,11 +29,11 @@ const AllUsers = () => {
         <Loader />
       ) : (
         <div className="py-8 mt-2 md:gap-9 w-full grid grid-cols-1 xs:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-7 max-w-5xl;">
-          {users?.documents.map((user) => {
+          {users?.documents?.map((user) => {
             if (user.$id === currentUser?.$id) return null;
             let followedFlag = false;
-            if (followed && followed.documents[0].followed) {
-              followed.documents[0].followed.forEach((id) => {
+            if (followed && followed?.documents[0]?.followed) {
+              followed?.documents[0]?.followed?.forEach((id) => {
                 if (id === user.$id) {
                   followedFlag = true;
                 }

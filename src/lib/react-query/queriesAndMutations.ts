@@ -26,6 +26,14 @@ import {
   getFollowedList,
   updateFollowedList,
   getSavedPosts,
+  getComments,
+  addComment,
+  addReply,
+  postActivty,
+  getRecentActivity,
+  getUserById,
+  getFollowersList,
+  updateFollowersList,
 } from "../AppWrite/api";
 import { QUERY_KEYS } from "./querykeys";
 
@@ -226,6 +234,16 @@ export const useGetFollowed = (userId: string) => {
   });
 };
 
+export const useGetFollowers = (userId: string) => {
+  console.log("Inside query Mutation : ", userId);
+
+  return useQuery({
+    queryKey: ["followers", userId],
+    queryFn: () => getFollowersList(userId),
+    enabled: !!userId,
+  });
+};
+
 export const useUpdateFollowed = (userId: string) => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -245,6 +263,35 @@ export const useUpdateFollowed = (userId: string) => {
       queryClient.invalidateQueries({
         queryKey: ["followed", userId],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["followers", userId],
+      });
+    },
+  });
+};
+
+export const useUpdateFollowers = (userId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      docId,
+      newUpdatedFollowers,
+    }: {
+      docId: string;
+      newUpdatedFollowers: unknown[];
+    }) => {
+      console.log("List in useUpdated : ", newUpdatedFollowers);
+
+      return updateFollowersList(docId, newUpdatedFollowers);
+    },
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["followers", userId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["followed", userId],
+      });
     },
   });
 };
@@ -253,6 +300,99 @@ export const useGetSavedPosts = (userId: string) => {
   return useQuery({
     queryKey: ["saved", userId],
     queryFn: () => getSavedPosts(userId),
+    enabled: !!userId,
+  });
+};
+
+export const useGetComments = (postId: string) => {
+  return useInfiniteQuery({
+    queryKey: ["comments", postId],
+    queryFn: function ({ pageParam }: { pageParam: number }) {
+      return getComments({ pageParam, postId });
+    } as any,
+
+    getNextPageParam: (lastPage: any, pages: any) => {
+      console.log("LASTPAGE: ", lastPage);
+      console.log("PAGES : ", pages);
+
+      if (lastPage && lastPage.documents.length < 2) {
+        return null;
+      }
+
+      const lastId = lastPage.documents[lastPage.documents.length - 1].$id;
+      return lastId;
+    },
+    enabled: !!postId,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchIntervalInBackground: false,
+  });
+};
+
+export const useAddComment = (postId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      postId,
+      comment,
+      userId,
+    }: {
+      postId: string;
+      comment: string;
+      userId: string;
+    }) => addComment(comment, postId, userId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["comments", postId],
+      });
+    },
+  });
+};
+
+export const useAddReply = (postId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      commentId,
+      reply,
+      userId,
+    }: {
+      commentId: string;
+      reply: string;
+      userId: string;
+    }) => addReply(reply, commentId, userId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["comments", postId],
+      });
+    },
+  });
+};
+
+export const useAddActivty = () => {
+  return useMutation({
+    mutationFn: ({
+      activityMessage,
+      userId,
+    }: {
+      activityMessage: string;
+      userId: string;
+    }) => postActivty(userId, activityMessage),
+  });
+};
+
+export const useGetActivity = () => {
+  return useQuery({
+    queryKey: ["activity"],
+    queryFn: () => getRecentActivity(),
+    refetchInterval: 5000,
+  });
+};
+
+export const useGetUserById = (userId: string) => {
+  return useQuery({
+    queryKey: ["user", userId],
+    queryFn: () => getUserById(userId),
     enabled: !!userId,
   });
 };

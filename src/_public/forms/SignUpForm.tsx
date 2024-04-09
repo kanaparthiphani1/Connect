@@ -16,6 +16,7 @@ import { SignUpValidation } from "@/lib/validation";
 import Loader from "@/components/shared/Loader";
 import { Link, useNavigate } from "react-router-dom";
 import {
+  useAddActivty,
   useCreateUserAccountMutation,
   useSignInAccountMutation,
 } from "@/lib/react-query/queriesAndMutations";
@@ -28,6 +29,8 @@ const SignUpForm = () => {
 
   const { mutateAsync: createUserAccount, isLoading: isCreatingUser } =
     useCreateUserAccountMutation();
+  const { mutateAsync: addActivity } = useAddActivty();
+
   const { mutateAsync: signInAccount } = useSignInAccountMutation();
 
   const form = useForm<z.infer<typeof SignUpValidation>>({
@@ -43,11 +46,15 @@ const SignUpForm = () => {
   async function onSubmit(values: z.infer<typeof SignUpValidation>) {
     //craete user
     const newUser = await createUserAccount(values);
+    console.log("NewUser : ", newUser);
+
     if (!newUser) {
       toast({
         title: "Sign up failed. PLease try again",
       });
     }
+
+    addActivity({ activityMessage: "NEW_USER", userId: newUser.$id });
 
     const session = await signInAccount({
       email: values.email,
@@ -71,10 +78,19 @@ const SignUpForm = () => {
   return (
     <Form {...form}>
       <div className="sm:w-420 flex-center flex-col">
-        <img src="/assets/images/logo.svg" alt="logo" />
-        <h2 className="h3-bold md:h2-bold sm:pt-12 pt-5">
-          Create a new Account
-        </h2>
+        <div className="relative flex w-32 pl-2 h-32 justify-center items-center">
+          <img
+            src="/assets/images/connect-logo.png"
+            alt="logo"
+            width={100}
+            height={36}
+            className="absolute z-10 left-4"
+          />
+          <h2 className="h2-bold md:h1-bold flex flex-row self-center text-left z-20 w-full font-pacifico">
+            Connect
+          </h2>
+        </div>
+        <h2 className="h3-bold md:h2-bold ">Create a new Account</h2>
         <p className="text-light-3 small-medium md:base-regular mt-2">
           To use connect enter your account details
         </p>

@@ -15,14 +15,23 @@ const LeftSidebar = () => {
   return (
     <nav className="leftsidebar">
       <div className="flex flex-col gap-10">
-        <Link to="/" className="flex gap-3 items-center flex-center">
-          <img
-            src="/assets/images/logo.svg"
-            alt="logo"
-            width={170}
-            height={36}
-          />
-        </Link>
+        <div className="flex w-full justify-center">
+          <Link
+            to="/"
+            className="relative mt-5 flex gap-3 items-center justify-center"
+          >
+            <img
+              src="/assets/images/connect-logo.png"
+              alt="logo"
+              width={100}
+              height={36}
+              className="absolute z-10 left-4"
+            />
+            <h2 className="h3-bold md:h2-bold  text-left z-20 w-full font-pacifico">
+              Connect
+            </h2>
+          </Link>
+        </div>
 
         <ul className="flex flex-col gap-3 mt-10">
           {sidebarLinks.map((linkDetails: INavLink) => {

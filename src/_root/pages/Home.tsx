@@ -1,3 +1,4 @@
+import Activity from "@/components/shared/Activity";
 import Loader from "@/components/shared/Loader";
 import PostCard from "@/components/shared/PostCard";
 import { useGetRecentPostsQuery } from "@/lib/react-query/queriesAndMutations";
@@ -20,7 +21,7 @@ const Home = () => {
   }, [inView]);
 
   return (
-    <div className="flex flex-1">
+    <div className="flex flex-1 h-full overflow-scroll custom-scrollbar ">
       <div className="home-container">
         <div className="home-posts">
           <h2 className="h3-bold md:h2-bold text-left w-full">Home Feed</h2>
@@ -45,6 +46,7 @@ const Home = () => {
           </div>
         )}
       </div>
+      <Activity />
     </div>
   );
 };

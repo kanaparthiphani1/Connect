@@ -44,6 +44,29 @@ export async function saveUserToDB(user: {
       ID.unique(),
       user
     );
+
+    if (newUser) {
+      await databases.createDocument(
+        appwriteConfig.databaseId,
+        appwriteConfig.followedCollectionId,
+        ID.unique(),
+        {
+          user: newUser.$id,
+          followed: [],
+        }
+      );
+
+      await databases.createDocument(
+        appwriteConfig.databaseId,
+        appwriteConfig.followCollectionId,
+        ID.unique(),
+        {
+          user: newUser.$id,
+          followedList: [],
+        }
+      );
+    }
+
     return newUser;
   } catch (err) {
     console.log(err);
@@ -83,6 +106,22 @@ export async function getCurrentUser() {
     );
     if (!currentUser) throw Error;
     return currentUser.documents[0];
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+export async function getUserById(userId: string) {
+  try {
+    console.log("UserId: " + userId);
+
+    const user = await databases.getDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.userCollectionId,
+      userId
+    );
+    if (!user) throw Error;
+    return user;
   } catch (err) {
     console.log(err);
   }
@@ -392,6 +431,24 @@ export async function getFollowedList(userId: string) {
   }
 }
 
+export async function getFollowersList(userId: string) {
+  try {
+    console.log("Inside query", userId);
+
+    const followers = await databases.listDocuments(
+      appwriteConfig.databaseId,
+      appwriteConfig.followCollectionId,
+      [Query.equal("user", userId)]
+    );
+
+    if (!followers) throw Error;
+
+    return followers;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export async function updateFollowedList(docId: string, followedList: any[]) {
   try {
     console.log("List in API : ", followedList);
@@ -402,6 +459,27 @@ export async function updateFollowedList(docId: string, followedList: any[]) {
       docId,
       {
         followed: followedList,
+      }
+    );
+
+    if (!statusCode) throw Error;
+
+    return { status: "Ok" };
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function updateFollowersList(docId: string, followersList: any[]) {
+  try {
+    console.log("List in API : ", followersList);
+
+    const statusCode = await databases.updateDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.followCollectionId,
+      docId,
+      {
+        followedList: followersList,
       }
     );
 
@@ -424,6 +502,126 @@ export async function getSavedPosts(userId: string) {
     if (!saved) throw Error;
 
     return saved;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function getComments({
+  pageParam = 0,
+  postId,
+}: {
+  pageParam: number;
+  postId: string;
+}) {
+  const queries = [
+    Query.equal("post", postId),
+    Query.orderAsc("$updatedAt"),
+    Query.limit(2),
+  ];
+  if (pageParam) {
+    queries.push(Query.cursorAfter(pageParam.toString()));
+  }
+  try {
+    const comments = await databases.listDocuments(
+      appwriteConfig.databaseId,
+      appwriteConfig.commentsCollectionId,
+      queries
+    );
+
+    console.log("Comments in API : ", comments);
+
+    if (!comments) throw Error;
+
+    return comments;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function addComment(
+  comment: string,
+  postId: string,
+  userId: string
+) {
+  try {
+    const newComment = await databases.createDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.commentsCollectionId,
+      ID.unique(),
+      {
+        comment: comment,
+        post: postId,
+        users: userId,
+      }
+    );
+
+    if (!newComment) throw Error;
+
+    return newComment;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function addReply(
+  reply: string,
+  commentId: string,
+  userId: string
+) {
+  console.log("Came here");
+
+  try {
+    const newReply = await databases.createDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.repliesCollectionId,
+      ID.unique(),
+      {
+        reply: reply,
+        comment: commentId,
+        user: userId,
+      }
+    );
+
+    if (!newReply) throw Error;
+
+    return newReply;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function postActivty(userId: string, activity: string) {
+  try {
+    const newActivity = await databases.createDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.activityCollectionId,
+      ID.unique(),
+      {
+        user: userId,
+        activityMessage: activity,
+      }
+    );
+
+    if (!newActivity) throw Error;
+
+    return newActivity;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function getRecentActivity() {
+  try {
+    const recentActivity = await databases.listDocuments(
+      appwriteConfig.databaseId,
+      appwriteConfig.activityCollectionId,
+      [Query.orderDesc("$updatedAt"), Query.limit(5)]
+    );
+
+    if (!recentActivity) throw Error;
+
+    return recentActivity;
   } catch (error) {
     console.log(error);
   }

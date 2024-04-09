@@ -56,3 +56,22 @@ export const multiFormatDateString = (timestamp: string = ""): string => {
 export const checkIsLiked = (likeList: string[], userId: string) => {
   return likeList.includes(userId);
 };
+
+export const getActionMessage = (activityMessage: string) => {
+  switch (activityMessage) {
+    case "NEW_POST":
+      return "posted something new";
+    case "COMMENTED":
+      return "commented on a post";
+    case "REPLIED":
+      return "replied on a post";
+    case "LIKED_POST":
+      return "liked a post";
+    case "SAVED_POST":
+      return "saved a post";
+    case "NEW_USER":
+      return "just joined the community";
+    default:
+      return "Something went wrong";
+  }
+};

@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Pacifico&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -136,7 +137,7 @@
 
   /* Home */
   .home-container {
-    @apply flex flex-col flex-1 items-center gap-10 overflow-scroll py-10 px-5 md:px-8 lg:p-14 custom-scrollbar;
+    @apply flex flex-col flex-1 items-center gap-10  py-10 px-5 md:px-8 lg:p-14;
   }
 
   .home-posts {
@@ -170,11 +171,11 @@
 
   /* Profile */
   .profile-container {
-    @apply flex flex-col items-center flex-1 gap-10 overflow-scroll py-10 px-5 md:p-14 custom-scrollbar;
+    @apply flex flex-col items-center flex-1 gap-9 overflow-scroll py-10 px-5 md:p-14 custom-scrollbar;
   }
 
   .profile-inner_container {
-    @apply flex items-center md:mb-8 xl:items-start gap-8 flex-col xl:flex-row relative max-w-5xl w-full;
+    @apply flex items-center md:mb-5 xl:items-start gap-8 flex-col xl:flex-row relative max-w-5xl w-full;
   }
 
   .profile-tab {
@@ -258,7 +259,10 @@
   }
 
   .shad-input {
-    @apply h-12 bg-dark-4 border-none placeholder:text-light-4 focus-visible:ring-1 focus-visible:ring-offset-1 ring-offset-light-3 !important;
+    @apply h-12 bg-dark-4 border-none placeholder:text-light-4 focus-visible:ring-1 focus-visible:ring-offset-0 ring-offset-light-1 focus:ring-0 focus:ring-transparent !important;
+  }
+  .shad-input-small {
+    @apply h-9 bg-dark-4 border-none placeholder:text-light-4 focus-visible:ring-1 focus-visible:ring-offset-0 ring-offset-light-1 focus:ring-0 focus:ring-transparent !important;
   }
 
   .shad-textarea {
@@ -268,6 +272,10 @@
   /* Button */
   .shad-button_primary {
     @apply bg-primary-500 hover:bg-primary-600 text-light-1 flex gap-2 !important;
+  }
+
+  .shad-button_danger {
+    @apply bg-rose-500 hover:bg-rose-600 text-light-1 flex gap-2 !important;
   }
 
   .shad-button_dark_4 {

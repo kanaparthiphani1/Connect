@@ -42,6 +42,7 @@ module.exports = {
       },
       fontFamily: {
         inter: ["Inter", "sans-serif"],
+        pacifico: ["Pacifico", "sans-serif"],
       },
       keyframes: {
         "accordion-down": {
